@@ -13,6 +13,7 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 import CounterState from "./components/counter-state";
 import IncrementButton from "./components/increment-button";
+import InitButton from "./components/init-button";
 
 import './App.css';
 
@@ -38,6 +39,8 @@ function App() {
           <WalletMultiButton />
           <h1>Hello Solana</h1> 
           <CounterState />
+          <InitButton />
+          <pre></pre>
           <IncrementButton />
         </WalletModalProvider>
       </WalletProvider>

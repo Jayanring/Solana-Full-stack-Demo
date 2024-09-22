@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { program } from "../anchor/setup";
 
-export default function IncrementButton() {
+export default function InitButton() {
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +15,7 @@ export default function IncrementButton() {
     try {
       // Create a transaction to invoke the increment function 
       const transaction = await program.methods
-        .increment().accounts({
+        .initialize().accounts({
           user: publicKey
         }) // This takes no arguments so we don't need to pass anything
         .transaction();
@@ -41,7 +41,7 @@ export default function IncrementButton() {
         onClick={onClick}
         disabled={!publicKey}
       >
-        {isLoading ? "Loading" : "Increment"}
+        {isLoading ? "Loading" : "Init"}
       </button>
     </>
   );

@@ -1,33 +1,27 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import { Counter } from "../target/types/counter";
-import { PublicKey } from "@solana/web3.js";
+import { Counter, IDL } from "../target/types/counter";
+import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
 
 describe("counter", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.Counter as Program<Counter>;
-  const wallet = provider.wallet as anchor.Wallet;
-  const connection = provider.connection;
+  const program = new anchor.Program(IDL, "6Jt2TKMTuejidRbctw4zGPmTMr7xcqsunRCA3DUHDBp3", provider);
 
   const [counterPDA] = PublicKey.findProgramAddressSync(
     [Buffer.from("counter")],
     program.programId
   );
+  console.log("counterPDA: ", counterPDA);
 
   it("Is initialized!", async () => {
-    try {
-      const txSig = await program.methods.initialize().rpc();
+    const txSig = await program.methods.initialize().rpc();
 
-      const accountData = await program.account.counter.fetch(counterPDA);
-      console.log(`Transaction Signature: ${txSig}`);
-      console.log(`Count: ${accountData.count}`);
-    } catch (error) {
-      // If PDA Account already created, then we expect an error
-      console.log(error);
-    }
+    const accountData = await program.account.counter.fetch(counterPDA);
+    console.log(`Transaction Signature: ${txSig}`);
+    console.log(`Count: ${accountData.count}`);
   });
 
   it("Increment", async () => {

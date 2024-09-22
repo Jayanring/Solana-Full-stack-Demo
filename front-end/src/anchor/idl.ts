@@ -1,5 +1,5 @@
 export type Counter = {
-  "version": "0.2.0",
+  "version": "0.1.0",
   "name": "counter",
   "instructions": [
     {
@@ -48,6 +48,11 @@ export type Counter = {
               }
             ]
           }
+        },
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
         }
       ],
       "args": []
@@ -64,17 +69,24 @@ export type Counter = {
             "type": "u64"
           },
           {
-            "name": "bump",
-            "type": "u8"
+            "name": "admin",
+            "type": "publicKey"
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "SignerNotAdmin",
+      "msg": "Signer Is Not Admin"
     }
   ]
 };
 
 export const IDL: Counter = {
-  "version": "0.2.0",
+  "version": "0.1.0",
   "name": "counter",
   "instructions": [
     {
@@ -123,6 +135,11 @@ export const IDL: Counter = {
               }
             ]
           }
+        },
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
         }
       ],
       "args": []
@@ -139,11 +156,18 @@ export const IDL: Counter = {
             "type": "u64"
           },
           {
-            "name": "bump",
-            "type": "u8"
+            "name": "admin",
+            "type": "publicKey"
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "SignerNotAdmin",
+      "msg": "Signer Is Not Admin"
     }
   ]
 };

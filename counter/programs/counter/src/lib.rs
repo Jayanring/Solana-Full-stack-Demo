@@ -1,6 +1,12 @@
 use anchor_lang::prelude::*;
 
-declare_id!("7FBBdRPMWb7eE5pRdpi3GRCNjxwFNwv33BGz3PNHb4bt");
+declare_id!("6Jt2TKMTuejidRbctw4zGPmTMr7xcqsunRCA3DUHDBp3");
+
+#[error_code]
+pub enum ErrorCode {
+    #[msg("Signer Is Not Admin")]
+    SignerNotAdmin,
+}
 
 #[program]
 pub mod counter {
@@ -8,9 +14,11 @@ pub mod counter {
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         let counter = &mut ctx.accounts.counter;
-        counter.bump = ctx.bumps.counter; // store bump seed in `Counter` account
+        // counter.bump = ctx.bumps.counter; // store bump seed in `Counter` account
+        counter.admin = ctx.accounts.user.key();
         msg!("Counter account created! Current count: {}", counter.count);
-        msg!("Counter bump: {}", counter.bump);
+        msg!("admin: {}", counter.admin);
+        // msg!("Counter bump: {}", counter.bump);
         Ok(())
     }
 
@@ -46,14 +54,16 @@ pub struct Increment<'info> {
     #[account(
         mut,
         seeds = [b"counter"], // optional seeds for pda
-        bump = counter.bump,  // bump seed for pda stored in `Counter` account
+        bump,  // bump seed for pda stored in `Counter` account
     )]
     pub counter: Account<'info, Counter>,
+    #[account(constraint = counter.admin == user.key() @ ErrorCode::SignerNotAdmin)]
+    pub user: Signer<'info>,
 }
 
 #[account]
 #[derive(InitSpace)]
 pub struct Counter {
-    pub count: u64, // 8 bytes
-    pub bump: u8,   // 1 byte
+    pub count: u64,    // 8 bytes
+    pub admin: Pubkey,
 }
